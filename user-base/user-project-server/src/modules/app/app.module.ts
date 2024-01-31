@@ -1,40 +1,25 @@
-import * as path from 'path';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthMiddleware } from '@src/middleware/auth.middleware';
 
 import { AuthModule } from '@modules/auth/auth.module';
+import { AuthService } from '@modules/auth/auth.service';
+import { CommonModule } from '@modules/common/common.module';
+import { UserController } from '@modules/user/user.controller';
 import { UserModule } from '@modules/user/user.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('TYPEORM_HOST'),
-        port: +configService.get('TYPEORM_PORT'),
-        database: configService.get('TYPEORM_DATABASE'),
-        username: configService.get('TYPEORM_USERNAME'),
-        password: configService.get('TYPEORM_PASSWORD'),
-        entities: [path.join(__dirname, '../', '**', '*.entity{.ts,.js}')],
-        logger: 'advanced-console',
-        logging: 'all',
-        // [path.join(__dirname, 'modules', '**', '*.entity{.ts,.js}')],
-        //[__dirname + '/**/*.entity{.ts, .js}'], //[path.join(__dirname, '..', 'modules', '**', '*.entity{.ts,.js}')],
-        synchronize: true,
-      }),
-      inject: [ConfigService],
-    }),
-    UserModule,
-    AuthModule,
-  ],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), CommonModule.forRoot(), UserModule, AuthModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AuthService, JwtService],
 })
-export class AppModule {}
+export class AppModule {
+  public configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AuthMiddleware).exclude({ path: 'user', method: RequestMethod.POST }).forRoutes(UserController);
+  }
+}

@@ -1,7 +1,5 @@
-import { Body, Controller, HttpCode, Delete, Get, HttpStatus, Logger, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, Delete, Get, HttpStatus, Logger, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-
-import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserResponseType } from './dto/get-one-user.response.dto';
@@ -38,7 +36,6 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   @GetUserListAPIDocumentation()
   async getAllUsers(): Promise<GetUserListResponseDto> {
     this.logger.log('Getting all Users');
@@ -47,7 +44,6 @@ export class UserController {
   }
 
   @Get(':email')
-  @UseGuards(JwtAuthGuard)
   @GetUserAPIDocumentation()
   async getOneUser(@Param() { email }: UserEmailParamDto): Promise<GetUserResponseType> {
     this.logger.log('Getting one User');
@@ -59,7 +55,6 @@ export class UserController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(JwtAuthGuard)
   @UpdateUserAPIDocumentation()
   async updateUser(@Param() { id }: UserIdDto, @Body() updateUserDto: UpdateUserDto): Promise<void> {
     this.logger.log('Updating User');
@@ -71,7 +66,6 @@ export class UserController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(JwtAuthGuard)
   @DeleteUserAPIDocumentation()
   async deleteUser(@Param() { id }: UserIdDto): Promise<void> {
     this.logger.log('Deleting User');

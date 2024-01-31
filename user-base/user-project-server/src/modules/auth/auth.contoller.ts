@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards, Get } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Get, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -11,6 +11,8 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
+
   constructor(
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
@@ -19,12 +21,16 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(@Request() req): Promise<AuthorizationUserResponseType> {
+    this.logger.log('Log in User');
+
     return this.authService.login(req.user);
   }
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)
   async getProfile(@Request() req): Promise<AuthorizationUserResponseType> {
+    this.logger.log('Get User info');
+
     return {
       id: req.user.id,
       email: req.user.email,

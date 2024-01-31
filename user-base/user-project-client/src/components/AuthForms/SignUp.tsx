@@ -132,7 +132,7 @@ export const SignUp: FC = () => {
         toast.success("User has been created");
       }
     } catch (error: any) {
-      const err = error.response?.data.message.toString();
+      const err = error.response?.data?.message?.toString();
       toast.error(err);
     }
   };

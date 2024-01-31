@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({
-  name: 'user',
+  name: 'users',
 })
 export class User {
   @PrimaryGeneratedColumn('uuid', {
@@ -57,7 +57,7 @@ export class User {
   @UpdateDateColumn({
     name: 'updated_date',
     type: 'timestamptz',
-    nullable: true,
+    nullable: false,
   })
   updatedDate: Date | null;
 

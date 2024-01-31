@@ -1,6 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { VALIDATION_ERROR_CONTEXT, ValidationException } from '@src/exceptions';
+import { NotFoundException } from '@src/exceptions/not-found.exception';
 
 import { User } from '../entities/user.entity';
 
@@ -19,7 +22,7 @@ export class UserValidatorService {
     }
 
     if (!user) {
-      throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+      throw new NotFoundException(VALIDATION_ERROR_CONTEXT.USER_ENTITY_NOT_FOUND);
     }
 
     return true;
@@ -29,7 +32,7 @@ export class UserValidatorService {
     const user = await this.doesUserEntityExistByEmail(email);
 
     if (user) {
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+      throw new ValidationException(VALIDATION_ERROR_CONTEXT.USER_ENTITY_ALREADY_EXIST);
     }
 
     return true;

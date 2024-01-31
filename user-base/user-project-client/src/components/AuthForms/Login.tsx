@@ -90,7 +90,7 @@ export const Login: FC = () => {
         toast.success("Logged in.");
       }
     } catch (error: any) {
-      const err = error.response?.data.message.toString();
+      const err = error.response?.data?.message?.toString();
       toast.error(err);
     }
   };

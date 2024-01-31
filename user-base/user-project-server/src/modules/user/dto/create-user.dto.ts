@@ -1,26 +1,28 @@
 import { IsEmail, IsInt, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
 
+import { VALIDATION_ERROR_CONTEXT } from '@src/exceptions';
+
 export class CreateUserDto {
   @IsEmail()
-  @MaxLength(96, { message: 'Email length should be less than 96 symbols' })
-  @IsString()
+  @MaxLength(96, { context: VALIDATION_ERROR_CONTEXT.USER_EMAIL_LENGTH_INVALID })
+  @IsString({ context: VALIDATION_ERROR_CONTEXT.USER_EMAIL_IS_NOT_STRING })
   email: string;
 
-  @MaxLength(100, { message: 'FirstName length should be less than 100 symbols' })
-  @IsString()
+  @MaxLength(100, { context: VALIDATION_ERROR_CONTEXT.USER_FIRSTNAME_LENGTH_INVALID })
+  @IsString({ context: VALIDATION_ERROR_CONTEXT.USER_FIRSTNAME_IS_NOT_STRING })
   firstName: string;
 
-  @MaxLength(100, { message: 'LastName length should be less than 100 symbols' })
-  @IsString()
+  @MaxLength(100, { context: VALIDATION_ERROR_CONTEXT.USER_LASTNAME_LENGTH_INVALID })
+  @IsString({ context: VALIDATION_ERROR_CONTEXT.USER_LASTNAME_IS_NOT_STRING })
   lastName: string;
 
-  @Max(100, { message: 'Age should be less than 100 years' })
-  @Min(18, { message: 'Age should be more than 18 years' })
-  @IsInt()
+  @Max(100, { context: VALIDATION_ERROR_CONTEXT.USER_AGE_INVALID })
+  @Min(18, { context: VALIDATION_ERROR_CONTEXT.USER_AGE_INVALID })
+  @IsInt({ context: VALIDATION_ERROR_CONTEXT.USER_AGE_INVALID })
   age: number;
 
-  @MaxLength(20, { message: 'Password length should be less than 20 symbols' })
-  @MinLength(5, { message: 'Password length should be more than symbols' })
-  @IsString()
+  @MaxLength(20, { context: VALIDATION_ERROR_CONTEXT.USER_PASSWORD_LENGTH_INVALID })
+  @MinLength(5, { context: VALIDATION_ERROR_CONTEXT.USER_PASSWORD_LENGTH_INVALID })
+  @IsString({ context: VALIDATION_ERROR_CONTEXT.USER_PASSWORD_IS_NOT_STRING })
   password: string;
 }

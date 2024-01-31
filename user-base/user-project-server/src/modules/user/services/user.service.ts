@@ -1,5 +1,7 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+
+import { DATABASE_ERROR_CONTEXT, ValidationException } from '@src/exceptions';
 
 import { CreateUserDto } from '../dto/create-user.dto';
 import { GetUserResponseType } from '../dto/get-one-user.response.dto';
@@ -29,7 +31,7 @@ export class UserService {
     } catch (error) {
       this.logger.log('Creating user exception', error);
 
-      throw new HttpException('User could not be created.', HttpStatus.BAD_REQUEST);
+      throw new ValidationException(DATABASE_ERROR_CONTEXT.USER_CREATE_ONE);
     }
   }
 

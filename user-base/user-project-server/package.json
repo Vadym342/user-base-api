@@ -19,7 +19,15 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.config.ts --runInBand --logHeapUsage --forceExit",
+    "migration:create": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js migration:create",
+    "seed:create": "typeorm-ts-node-commonjs migration:create",
+    "seed:run": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js -d ./src/database/seeds.datasource.ts migration:run",
+    "seed:revert": "ts-node -r tsconfig-paths/register src/database/seeds.revert.ts",
+    "db:schema:create": "ts-node -r tsconfig-paths/register ./scripts/db/createDBSchema.ts",
+    "migration:rollback:latest": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js -d ./src/database/migrations.datasource.ts migration:revert",
+    "migration:run:latest": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js -d ./src/database/migrations.datasource.ts migration:run",
+    "migration:rollback": "node node_modules/typeorm/cli.js migration:revert"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -35,15 +43,19 @@
     "class-validator": "^0.14.1",
     "dotenv": "^16.3.1",
     "eslint-plugin-unused-imports": "3.0.0",
+    "nestjs-pino": "^4.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.11.3",
+    "pino-http": "^9.0.0",
+    "pino-pretty": "^10.3.1",
     "reflect-metadata": "^0.1.14",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "swagger-ui-express": "^5.0.0",
-    "typeorm": "^0.3.19"
+    "typeorm": "^0.3.19",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.2.1",
@@ -56,6 +68,7 @@
     "@types/passport-jwt": "^4.0.0",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^2.0.16",
+    "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "6.0.0",
     "@typescript-eslint/parser": "6.14.0",
     "eslint": "^8.56.0",
@@ -72,7 +85,8 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "testcontainers": "^10.4.0"
   },
   "jest": {
     "moduleFileExtensions": [

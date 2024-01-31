@@ -1,6 +1,8 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { DATABASE_ERROR_CONTEXT, DatabaseException } from '@src/exceptions';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserResponseType } from './dto/get-one-user.response.dto';
@@ -22,13 +24,13 @@ export class UserRepository extends Repository<User> {
     } catch (error) {
       this.logger.log('Creating user exception', error);
 
-      throw new HttpException('User could not be created.', HttpStatus.BAD_REQUEST);
+      throw new DatabaseException(error, DATABASE_ERROR_CONTEXT.USER_CREATE_ONE);
     }
   }
 
   async getOne(email: string): Promise<GetUserResponseType> {
     try {
-      return this.createQueryBuilder('u')
+      return await this.createQueryBuilder('u')
         .select([
           'u.id AS "id"',
           'u.email AS "email"',
@@ -43,17 +45,17 @@ export class UserRepository extends Repository<User> {
     } catch (error) {
       this.logger.log('Selecting User exception', error);
 
-      throw new HttpException('User could not be selected.', HttpStatus.BAD_REQUEST);
+      throw new DatabaseException(error, DATABASE_ERROR_CONTEXT.USER_GET_ONE);
     }
   }
 
   async getAuth(email: string): Promise<User> {
     try {
-      return this.findOne({ where: { email } });
+      return await this.findOne({ where: { email } });
     } catch (error) {
       this.logger.log('Selecting User exception', error);
 
-      throw new HttpException('User could not be selected.', HttpStatus.BAD_REQUEST);
+      throw new DatabaseException(error, DATABASE_ERROR_CONTEXT.USER_GET_AUTH_ONE);
     }
   }
 
@@ -73,7 +75,7 @@ export class UserRepository extends Repository<User> {
     } catch (error) {
       this.logger.log('Selecting User exception', error);
 
-      throw new HttpException('User could not be selected.', HttpStatus.BAD_REQUEST);
+      throw new DatabaseException(error, DATABASE_ERROR_CONTEXT.USER_GET_MANY);
     }
   }
 
@@ -83,7 +85,7 @@ export class UserRepository extends Repository<User> {
     } catch (error) {
       this.logger.log('Updating User exception', error);
 
-      throw new HttpException('User could not be updated.', HttpStatus.BAD_REQUEST);
+      throw new DatabaseException(error, DATABASE_ERROR_CONTEXT.USER_UPDATE_ONE);
     }
   }
 
@@ -93,7 +95,7 @@ export class UserRepository extends Repository<User> {
     } catch (error) {
       this.logger.log('Deleting User exception', error);
 
-      throw new HttpException('User could not be deleted.', HttpStatus.BAD_REQUEST);
+      throw new DatabaseException(error, DATABASE_ERROR_CONTEXT.USER_DELETE_ONE);
     }
   }
 }
