@@ -1,3 +1,5 @@
+Update your .env file 
+
 Node version is `v18.13.0`
 
 1. `npm i` -  for server and client 
